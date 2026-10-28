@@ -1,0 +1,15 @@
+import { eventConfig } from "@/config/event";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { isValidEmail } from "@/lib/validation";
+const attempts = new Map<string, { count: number; resetAt: number }>();
+export async function POST(request: Request) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const now = Date.now(), current = attempts.get(ip);
+  if (current && current.resetAt > now && current.count >= 10) return Response.json({ error: "Too many lookups. Try again later." }, { status: 429 });
+  if (!current || current.resetAt <= now) attempts.set(ip, { count: 1, resetAt: now + 15 * 60 * 1000 }); else current.count++;
+  const { email } = await request.json().catch(() => ({}));
+  if (typeof email !== "string" || !isValidEmail(email)) return Response.json({ error: "Enter a valid email address." }, { status: 400 });
+  const { data, error } = await createAdminClient().from("orders").select("id,qty,status,ticket_number,rejection_reason,checked_in_count,checked_in_at,created_at").eq("event_id", eventConfig.eventId).eq("email", email.toLowerCase().trim()).order("created_at", { ascending: false }).limit(10);
+  if (error) return Response.json({ error: "Could not look up orders." }, { status: 500 });
+  return Response.json({ orders: data ?? [] });
+}
