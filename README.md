@@ -2,19 +2,18 @@
 
 A reusable, mobile-first ticketing website for DJ and club events. Customers pay by bank transfer, upload a receipt, and receive a ticket number by email after an administrator verifies the payment.
 
-The site supports manual bank-transfer verification and optional PayHere checkout.
+This project does **not** use a payment gateway or QR codes.
 
 ## Features
 
 - Event landing page with configurable event, venue, bank, theme, and ticket details
 - Bank-transfer checkout with receipt upload
-- Optional PayHere sandbox/live checkout
 - Client-side image compression for receipt images
 - Private Supabase Storage for receipts
 - Manual admin approval and rejection workflow
 - Ticket email delivery through Gmail SMTP
 - Customer order-status lookup
-- Ticket number generation with configurable prefix
+- SLIIT ID-based ticket numbers, with one ticket label per ticket quantity
 - Capacity limits and sales-open/closed controls
 - Admin receipt preview through short-lived signed URLs
 - Door check-in by ticket number, name, or email
@@ -59,14 +58,10 @@ Fill in `.env.local`:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_SITE_URL=https://your-production-domain.com
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 GMAIL_USER=tickets@example.com
 GMAIL_APP_PASSWORD=your-16-character-app-password
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-PAYHERE_SANDBOX=true
-PAYHERE_MERCHANT_ID=your-payhere-merchant-id
-PAYHERE_MERCHANT_SECRET=your-payhere-merchant-secret
-PAYHERE_NOTIFY_URL=https://your-public-domain.example/api/payhere/notify
 ```
 
 The following variables are server-only and must never be renamed with a `NEXT_PUBLIC_` prefix:
@@ -77,26 +72,20 @@ The following variables are server-only and must never be renamed with a `NEXT_P
 
 Never commit `.env.local`.
 
-For local PayHere testing, `PAYHERE_NOTIFY_URL` must be a publicly reachable HTTPS
-URL. PayHere cannot send notifications to `localhost`; use a deployed preview URL
-or an HTTPS tunnel. Keep the merchant secret server-only.
-
 ### 3. Configure Supabase
 
 1. Open the Supabase project SQL Editor.
-2. Run [`supabase/migrations/001_initial.sql`](./supabase/migrations/001_initial.sql).
+2. Run [`supabase/migrations/001_initial.sql`](./supabase/migrations/001_initial.sql), then [`supabase/migrations/002_sliit_ticket_numbers.sql`](./supabase/migrations/002_sliit_ticket_numbers.sql).
 3. Confirm that the `receipts` Storage bucket is private.
-4. Run [`supabase/migrations/002_payhere.sql`](./supabase/migrations/002_payhere.sql)
-   if PayHere checkout will be enabled.
-5. Create an Auth user with email and password.
-6. Add that user's UUID to the admin table:
+4. Create an Auth user with email and password.
+5. Add that user's UUID to the admin table:
 
    ```sql
    insert into public.admins (user_id)
    values ('AUTH_USER_UUID');
    ```
 
-7. Disable public signups in Supabase Auth settings.
+6. Disable public signups in Supabase Auth settings.
 
 The migration creates:
 
@@ -174,31 +163,19 @@ supabase/migrations/        Database schema and RLS migration
 2. Read the bank-transfer instructions.
 3. Transfer the ticket total to the configured bank account.
 4. Select **Buy ticket**.
-5. Enter your full name, email, phone number, ticket quantity, and bank reference.
+5. Enter your SLIIT ID (two letters followed by 8 digits), full name, email, phone number, ticket quantity, and bank reference. Email and bank reference are pre-filled from the SLIIT ID (`SLIIT_ID@my.sliit.lk` and `DJ-SLIIT_ID`), and both can be changed.
 6. Upload the payment receipt as a JPG, PNG, WEBP, or PDF under 5 MB.
 7. Submit the order.
 
-The order remains pending until an administrator verifies the payment. After approval, the ticket number is sent to the submitted email address. Customers should check their spam folder.
-
-### PayHere checkout
-
-When PayHere is selected, the site creates a pending order and redirects the
-customer to PayHere. The order is approved automatically only after the
-server-side `/api/payhere/notify` route verifies PayHere's notification hash,
-currency, and amount. Sandbox credentials and the live credentials are separate.
-
-Set `PAYHERE_SANDBOX=true` while testing. After creating a sandbox merchant,
-copy its merchant ID and secret into `.env.local`, configure the public
-`PAYHERE_NOTIFY_URL`, and run migration 002. Never expose the merchant secret
-with a `NEXT_PUBLIC_` prefix.
+The order remains pending until an administrator verifies the payment. After approval, the submitted email receives one ticket number per quantity, such as `AB22110084 - 1` through `AB22110084 - 5`. Share the individual numbers with friends. Customers should check their spam folder.
 
 ### Checking order status
 
-Open `/status` and enter the same email address used when buying the ticket. The page shows pending, approved, or rejected orders. Approved orders include the ticket number.
+Open `/status` and enter the same email address used when buying the ticket. The page shows pending, approved, or rejected orders. Approved orders include each individual ticket number.
 
 ### At the entrance
 
-Show the ticket email and ticket number to door staff. Staff may search using the ticket number, name, or email address.
+Show the relevant ticket number from the email to door staff. Staff may search using an individual ticket number such as `AB22110084 - 2`, the name, or the email address. Each individual ticket is checked in separately.
 
 ## Admin guide
 
@@ -225,8 +202,8 @@ Rejected orders may include an optional reason, which is emailed to the customer
 1. Open `/admin/checkin`.
 2. Search by ticket number, name, or email.
 3. Ticket-number searches accept different capitalization and tolerate missing spaces or dashes.
-4. For a multi-ticket order, select the number of tickets being used.
-5. Select **Check in**.
+4. For a shared ticket, search its individual number, such as `AB22110084 - 3`.
+5. Select **Check in ticket**. Each ticket number can be checked in only once.
 
 The page displays approved, checked-in, and remaining ticket counters. A customer who has already used all tickets receives a clear warning.
 

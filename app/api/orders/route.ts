@@ -3,10 +3,23 @@ import { eventConfig } from "@/config/event";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { allowedReceiptTypes, MAX_RECEIPT_BYTES, validateOrderInput } from "@/lib/validation";
 
+function normalizeBankReference(bankReference: string) {
+  const trimmed = bankReference.trim().toUpperCase();
+  const match = trimmed.match(/^DJ[-\s]?([A-Z]{2}\d{8})$/);
+  return match ? `DJ-${match[1]}` : trimmed;
+}
+
 export async function POST(request: NextRequest) {
   if (!eventConfig.salesOpen) return Response.json({ error: "Sales are closed." }, { status: 400 });
   const form = await request.formData(), file = form.get("receipt");
-  const input = { name: String(form.get("name") ?? ""), email: String(form.get("email") ?? "").toLowerCase().trim(), phone: String(form.get("phone") ?? ""), qty: Number(form.get("qty")), bankReference: String(form.get("bankReference") ?? "").trim() };
+  const input = {
+    name: String(form.get("name") ?? ""),
+    email: String(form.get("email") ?? "").toLowerCase().trim(),
+    phone: String(form.get("phone") ?? ""),
+    qty: Number(form.get("qty")),
+    bankReference: normalizeBankReference(String(form.get("bankReference") ?? "")),
+    sliitId: String(form.get("sliitId") ?? "").toUpperCase().trim()
+  };
   const error = validateOrderInput(input);
   if (error || !(file instanceof File)) return Response.json({ error: error ?? "Receipt is required." }, { status: 400 });
   if (!allowedReceiptTypes.includes(file.type) || file.size > MAX_RECEIPT_BYTES) return Response.json({ error: "Invalid receipt file." }, { status: 400 });
@@ -31,6 +44,7 @@ export async function POST(request: NextRequest) {
     phone: input.phone,
     qty: input.qty,
     bank_reference: input.bankReference,
+    sliit_id: input.sliitId,
     event_id: eventConfig.eventId,
     receipt_path: path,
     status: "pending"

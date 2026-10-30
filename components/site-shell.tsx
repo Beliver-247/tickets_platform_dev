@@ -1,17 +1,18 @@
 import Link from "next/link";
 import { eventConfig } from "@/config/event";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
-  return <main className="min-h-screen bg-zinc-950 text-zinc-100">
+  return <main className="min-h-screen bg-[var(--theme-background)] text-[var(--theme-foreground)]">
     <header className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-5 py-5">
       <Link href="/" className="min-w-0 truncate font-black tracking-tight">{eventConfig.eventName}</Link>
-      <nav className="flex shrink-0 gap-4 text-sm text-zinc-400"><Link href="/status">Check order</Link></nav>
+      <nav className="flex shrink-0 items-center gap-3 text-sm text-[var(--theme-muted)]"><Link href="/status">Check order</Link><ThemeToggle /></nav>
     </header>
     {children}
-    <footer className="mx-auto max-w-6xl px-5 py-12 text-sm text-zinc-500">Need help? {eventConfig.contact.supportEmail} · {eventConfig.contact.supportPhone}</footer>
+    <footer className="mx-auto max-w-6xl px-5 py-12 text-sm text-[var(--theme-muted)]">Need help? {eventConfig.contact.supportEmail} · {eventConfig.contact.supportPhone}</footer>
   </main>;
 }
 
 export function ButtonLink({ href, children, muted = false }: { href: string; children: React.ReactNode; muted?: boolean }) {
-  return <Link href={href} className={`inline-flex items-center justify-center rounded-full px-6 py-3 font-bold transition ${muted ? "bg-zinc-800" : "bg-[var(--primary)] hover:opacity-90"}`} style={{ color: muted ? "#d4d4d8" : "#09090b" }}>{children}</Link>;
+  return <Link href={href} className={`inline-flex items-center justify-center rounded-full px-6 py-3 font-bold transition ${muted ? "bg-zinc-800 text-[var(--theme-foreground)]" : "bg-[var(--primary)] text-zinc-950 hover:opacity-90"}`}>{children}</Link>;
 }

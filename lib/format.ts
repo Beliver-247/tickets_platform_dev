@@ -5,5 +5,9 @@ export function formatMoney(amount: number) {
 }
 
 export function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-US", { dateStyle: "full", timeStyle: "short" }).format(new Date(value));
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "full",
+    timeStyle: "short",
+    timeZone: "Asia/Colombo"
+  }).format(new Date(value));
 }

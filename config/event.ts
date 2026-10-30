@@ -1,31 +1,35 @@
 export const eventConfig = {
   eventId: "DJNIGHT2026",
-  eventName: "DJ Night & Open mic",
-  tagline: "join the rave",
-  date: "2026-12-31T22:00:00+05:30",
+  eventName: "Open Mic & DJ night",
+  tagline: "SLIIT Choir presents",
+  date: "2026-11-16T17:30:00+05:30",
   doorsOpenTime: "5.30PM",
   venueName: "New Building",
   venueAddress: "14th floor",
-  mapLink: "https://maps.google.com/?q=REPLACE_ME",
+  mapLink: "https://maps.app.goo.gl/XfWL192RCFhARMyA9",
   ticketPrice: 500,
   currency: "LKR",
   maxTicketsPerOrder: 5,
   totalCapacity: undefined as number | undefined,
   salesOpen: true,
   bank: {
-    accountName: "Malintha Perera",
-    bankName: "Test Bank",
-    accountNumber: "120192018989",
-    branch: "Malabe",
-    paymentInstructions: "Transfer and upload recipt"
+    accountName: "Dumindu Mendis",
+    bankName: "People's Bank",
+    accountNumber: "081200210025946",
+    branch: "Ruwanwella",
+    paymentInstructions: "Transfer and upload recipt put reference as DJ-ITXXXXXXXX"
   },
   contact: {
     supportEmail: "sliitchoir@gmail.com",
     supportPhone: "0714266663"
   },
   theme: {
-    primary: "#d8ff3e",
-    accent: "#ff3cac",
+    primary: "#c026ff",
+    accent: "#ff2bd6",
+    background: "#0b0810",
+    surface: "#17111f",
+    foreground: "#f8f4ff",
+    muted: "#b9abc7",
     logoPath: "",
     heroImagePath: ""
   },
