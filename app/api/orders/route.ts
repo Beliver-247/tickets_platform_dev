@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { eventConfig } from "@/config/event";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { allowedReceiptTypes, MAX_RECEIPT_BYTES, validateOrderInput } from "@/lib/validation";
+import { allowedReceiptTypes, MAX_RECEIPT_BYTES, parseTransactionAt, validateOrderInput } from "@/lib/validation";
 
 function normalizeBankReference(bankReference: string) {
   const trimmed = bankReference.trim().toUpperCase();
@@ -18,7 +18,8 @@ export async function POST(request: NextRequest) {
     phone: String(form.get("phone") ?? ""),
     qty: Number(form.get("qty")),
     bankReference: normalizeBankReference(String(form.get("bankReference") ?? "")),
-    sliitId: String(form.get("sliitId") ?? "").toUpperCase().trim()
+    sliitId: String(form.get("sliitId") ?? "").toUpperCase().trim(),
+    transactionAt: String(form.get("transactionAt") ?? "")
   };
   const error = validateOrderInput(input);
   if (error || !(file instanceof File)) return Response.json({ error: error ?? "Receipt is required." }, { status: 400 });
@@ -47,15 +48,14 @@ export async function POST(request: NextRequest) {
     sliit_id: input.sliitId,
     event_id: eventConfig.eventId,
     receipt_path: path,
-    status: "pending"
+    status: "pending",
+    transaction_at: parseTransactionAt(input.transactionAt)?.toISOString()
   }).select("id").single();
   if (insert.error) {
     console.error("Order insert failed.", insert.error);
     await supabase.storage.from("receipts").remove([path]);
     return Response.json({
-      error: insert.error.code === "23505"
-        ? "That bank reference has already been submitted."
-        : insert.error.code === "PGRST205" || insert.error.code === "PGRST204"
+      error: insert.error.code === "PGRST205" || insert.error.code === "PGRST204"
           ? "The database is not configured. Run the Supabase migration."
           : "Could not create order."
     }, { status: 400 });

@@ -75,7 +75,8 @@ Never commit `.env.local`.
 ### 3. Configure Supabase
 
 1. Open the Supabase project SQL Editor.
-2. Run [`supabase/migrations/001_initial.sql`](./supabase/migrations/001_initial.sql), then [`supabase/migrations/002_sliit_ticket_numbers.sql`](./supabase/migrations/002_sliit_ticket_numbers.sql).
+2. Run [`supabase/migrations/001_initial.sql`](./supabase/migrations/001_initial.sql), then [`supabase/migrations/002_sliit_ticket_numbers.sql`](./supabase/migrations/002_sliit_ticket_numbers.sql), [`supabase/migrations/003_transaction_time.sql`](./supabase/migrations/003_transaction_time.sql), [`supabase/migrations/004_allow_duplicate_bank_references.sql`](./supabase/migrations/004_allow_duplicate_bank_references.sql), and [`supabase/migrations/005_sequential_ticket_numbers.sql`](./supabase/migrations/005_sequential_ticket_numbers.sql).
+   The fourth migration allows multiple orders to use the same default SLIIT ID/reference; admins should verify each receipt separately.
 3. Confirm that the `receipts` Storage bucket is private.
 4. Create an Auth user with email and password.
 5. Add that user's UUID to the admin table:
@@ -109,7 +110,6 @@ At minimum, replace:
 - `eventName`
 - `tagline`
 - `date`
-- `doorsOpenTime`
 - `venueName`
 - `venueAddress`
 - Bank details
@@ -189,7 +189,7 @@ Creating an Auth user alone does not grant admin access. The user's ID must also
 
 1. Open `/admin/orders`.
 2. Select the **Pending** tab.
-3. Review the customer details, bank reference, submission time, and uploaded receipt.
+3. Review the customer details, bank reference, transaction time, submission time, and uploaded receipt. Use the date filters to find orders by transaction date.
 4. Use **Receipt** to open a temporary signed URL.
 5. Watch for duplicate bank-reference warnings.
 6. Select **Approve** or **Reject**.
@@ -243,7 +243,7 @@ No SQL changes are needed.
 2. Change `eventId` to a new unique slug, for example:
 
    ```ts
-   eventId: "neon-night-2027"
+   eventId: "neon-night-2027";
    ```
 
 3. Replace the event name, tagline, date, doors time, venue, address, map link, and theme.

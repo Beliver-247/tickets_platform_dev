@@ -27,5 +27,5 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return <html lang="en"><body suppressHydrationWarning style={{
     "--primary": eventConfig.theme.primary,
     "--accent": eventConfig.theme.accent
-  } as React.CSSProperties}><script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem("dj-ticket-theme");document.body.dataset.theme=t==="light"?"light":"dark"}catch(e){document.body.dataset.theme="dark"}` }} />{children}</body></html>;
+  } as React.CSSProperties}><script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem("dj-ticket-theme");document.body.dataset.theme=t==="dark"?"dark":"light"}catch(e){document.body.dataset.theme="light"}` }} />{children}</body></html>;
 }

@@ -5,12 +5,11 @@ import { useEffect, useState } from "react";
 const STORAGE_KEY = "dj-ticket-theme";
 
 export function ThemeToggle() {
-  const [light, setLight] = useState(false);
+  const [light, setLight] = useState(true);
 
   useEffect(() => {
     const saved = window.localStorage.getItem(STORAGE_KEY);
-    const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
-    const isLight = saved ? saved === "light" : prefersLight;
+    const isLight = saved ? saved === "light" : true;
     document.body.dataset.theme = isLight ? "light" : "dark";
     setLight(isLight);
   }, []);

@@ -3,23 +3,71 @@ import { eventConfig } from "@/config/event";
 import { formatDate } from "@/lib/format";
 
 function transporter() {
-  return nodemailer.createTransport({ service: "gmail", auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD } });
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD,
+    },
+  });
 }
 function escapeHtml(value: string) {
-  return value.replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character] ?? character);
+  return value.replace(
+    /[&<>"']/g,
+    (character) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        character
+      ] ?? character,
+  );
 }
 function ticketCard(ticket: string) {
-  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#f7effb" style="margin:0 0 20px;border:2px solid #c026ff;border-radius:16px;overflow:hidden;background-color:#f7effb;color:#24152d"><tr><td style="padding:0"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td width="calc(100% - 112px)" bgcolor="#f7effb" style="width:calc(100% - 112px);padding:28px 24px;background-color:#f7effb;min-height:220px;color:#24152d !important;-webkit-text-fill-color:#24152d"><div style="font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#5a2474 !important;-webkit-text-fill-color:#5a2474"><font color="#5a2474">SLIIT CHOIR PRESENTS</font></div><div style="font-size:30px;line-height:1.05;font-weight:900;text-transform:uppercase;margin-top:24px;color:#24152d !important;-webkit-text-fill-color:#24152d"><font color="#24152d">Open Mic<br><span style="color:#6b168f !important;-webkit-text-fill-color:#6b168f"><font color="#6b168f">&amp; DJ Night</font></span></font></div><div style="font-size:12px;line-height:1.45;letter-spacing:2px;text-transform:uppercase;margin-top:24px;color:#4b2558 !important;-webkit-text-fill-color:#4b2558"><font color="#4b2558">${escapeHtml(formatDate(eventConfig.date))} · ${escapeHtml(eventConfig.doorsOpenTime)}</font></div><div style="font-size:13px;line-height:1.4;margin-top:8px;color:#4b2558 !important;-webkit-text-fill-color:#4b2558"><font color="#4b2558">${escapeHtml(eventConfig.venueName)} · ${escapeHtml(eventConfig.venueAddress)}</font></div></td><td width="112" valign="middle" align="center" bgcolor="#f7effb" style="border-left:2px dashed #c026ff;background-color:#f7effb;padding:16px 8px;color:#24152d !important;-webkit-text-fill-color:#24152d"><div style="font-size:20px;line-height:1.15;letter-spacing:5px;font-weight:900;writing-mode:vertical-rl;transform:rotate(180deg);color:#24152d !important;-webkit-text-fill-color:#24152d"><font color="#24152d">ADMIT ONE</font></div><div style="height:54px;margin-top:18px;background-color:#6b168f;background:repeating-linear-gradient(90deg,#6b168f 0,#6b168f 2px,transparent 2px,transparent 5px)"></div></td></tr></table></td></tr><tr><td bgcolor="#f7effb" style="padding:16px 24px;background-color:#f7effb;border-top:1px solid #c026ff;color:#24152d !important;-webkit-text-fill-color:#24152d"><div style="font-size:11px;line-height:1.4;letter-spacing:2px;text-transform:uppercase;color:#6b5273 !important;-webkit-text-fill-color:#6b5273"><font color="#6b5273">Ticket number</font></div><div style="font-family:Arial,sans-serif;font-size:26px;line-height:1.15;font-weight:900;letter-spacing:1px;color:#5a2474 !important;-webkit-text-fill-color:#5a2474;margin-top:4px;overflow-wrap:anywhere"><font color="#5a2474">${escapeHtml(ticket)}</font></div><div style="font-size:11px;line-height:1.4;color:#6b5273 !important;-webkit-text-fill-color:#6b5273;margin-top:8px"><font color="#6b5273">Show this ticket number at the entrance</font></div></td></tr></table>`;
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#f7effb" style="margin:0 0 20px;border:2px solid #c026ff;border-radius:16px;overflow:hidden;background-color:#f7effb;color:#24152d"><tr><td style="padding:0"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td width="calc(100% - 112px)" bgcolor="#f7effb" style="width:calc(100% - 112px);padding:28px 24px;background-color:#f7effb;min-height:220px;color:#24152d !important;-webkit-text-fill-color:#24152d"><div style="font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#5a2474 !important;-webkit-text-fill-color:#5a2474"><font color="#5a2474">SLIIT CHOIR PRESENTS</font></div><div style="font-size:30px;line-height:1.05;font-weight:900;text-transform:uppercase;margin-top:24px;color:#24152d !important;-webkit-text-fill-color:#24152d"><font color="#24152d">Open Mic<br><span style="color:#6b168f !important;-webkit-text-fill-color:#6b168f"><font color="#6b168f">&amp; DJ Night</font></span></font></div><div style="font-size:12px;line-height:1.45;letter-spacing:2px;text-transform:uppercase;margin-top:24px;color:#4b2558 !important;-webkit-text-fill-color:#4b2558"><font color="#4b2558">${escapeHtml(formatDate(eventConfig.date))}</font></div><div style="font-size:13px;line-height:1.4;margin-top:8px;color:#4b2558 !important;-webkit-text-fill-color:#4b2558"><font color="#4b2558">${escapeHtml(eventConfig.venueName)} · ${escapeHtml(eventConfig.venueAddress)}</font></div></td><td width="112" valign="middle" align="center" bgcolor="#f7effb" style="border-left:2px dashed #c026ff;background-color:#f7effb;padding:16px 8px;color:#24152d !important;-webkit-text-fill-color:#24152d"><div style="font-size:20px;line-height:1.15;letter-spacing:5px;font-weight:900;writing-mode:vertical-rl;transform:rotate(180deg);color:#24152d !important;-webkit-text-fill-color:#24152d"><font color="#24152d">ADMIT ONE</font></div><div style="height:54px;margin-top:18px;background-color:#6b168f;background:repeating-linear-gradient(90deg,#6b168f 0,#6b168f 2px,transparent 2px,transparent 5px)"></div></td></tr></table></td></tr><tr><td bgcolor="#f7effb" style="padding:16px 24px;background-color:#f7effb;border-top:1px solid #c026ff;color:#24152d !important;-webkit-text-fill-color:#24152d"><div style="font-size:11px;line-height:1.4;letter-spacing:2px;text-transform:uppercase;color:#6b5273 !important;-webkit-text-fill-color:#6b5273"><font color="#6b5273">Ticket number</font></div><div style="font-family:Arial,sans-serif;font-size:26px;line-height:1.15;font-weight:900;letter-spacing:1px;color:#5a2474 !important;-webkit-text-fill-color:#5a2474;margin-top:4px;overflow-wrap:anywhere"><font color="#5a2474">${escapeHtml(ticket)}</font></div><div style="font-size:11px;line-height:1.4;color:#6b5273 !important;-webkit-text-fill-color:#6b5273;margin-top:8px"><font color="#6b5273">Show this ticket number at the entrance</font></div></td></tr></table>`;
 }
-export async function sendTicketEmail(order: { email: string; name: string; qty: number; ticket_number: string }) {
-  const ticketNumbers = Array.from({ length: order.qty }, (_, index) => `${order.ticket_number}-${index + 1}`);
+export async function sendTicketEmail(order: {
+  email: string;
+  name: string;
+  qty: number;
+  ticket_number: string;
+  ticket_start?: number | null;
+}) {
+  const ticketStart = order.ticket_start ?? 1;
+  const ticketNumbers = Array.from(
+    { length: order.qty },
+    (_, index) => `${order.ticket_number}-${ticketStart + index}`,
+  );
   const ticketList = ticketNumbers.join(", ");
   const ticketCards = ticketNumbers.map(ticketCard).join("");
-  const subject = eventConfig.emailSubject.replace("REPLACE_ME_EMAIL_SUBJECT", `${eventConfig.eventName} ticket confirmation`);
-  const html = `<html><head><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"></head><body style="margin:0;background:#e4dbe8;color:#24152d"><div style="margin:0;background:#e4dbe8;padding:24px 12px;font-family:Arial,sans-serif;color:#24152d"><div style="max-width:640px;margin:0 auto"><h1 style="font-size:28px;margin:0 0 8px;color:#24152d !important;-webkit-text-fill-color:#24152d"><font color="#24152d">${escapeHtml(eventConfig.eventName)}</font></h1><p style="margin:0 0 20px;color:#5b4864 !important;-webkit-text-fill-color:#5b4864"><font color="#5b4864">Hi ${escapeHtml(order.name)}, your payment has been verified.</font></p>${ticketCards}<p style="margin:8px 0 20px;color:#4b2558 !important;-webkit-text-fill-color:#4b2558"><font color="#4b2558"><b>Share these ticket numbers with your ${order.qty} friend${order.qty === 1 ? "" : "s"}:</b><br><span style="color:#6b168f !important;-webkit-text-fill-color:#6b168f"><font color="#6b168f">${ticketList}</font></span></font></p><p style="color:#5b4864 !important;-webkit-text-fill-color:#5b4864"><font color="#5b4864"><b>Show the relevant ticket preview or ticket number at the entrance.</b></font></p><p style="color:#5b4864 !important;-webkit-text-fill-color:#5b4864"><font color="#5b4864">Support: ${escapeHtml(eventConfig.contact.supportEmail)} · ${escapeHtml(eventConfig.contact.supportPhone)}</font></p><hr style="border:0;border-top:1px solid #cfc0d4"><small style="color:#6b5273 !important;-webkit-text-fill-color:#6b5273"><font color="#6b5273">${escapeHtml(eventConfig.emailFooterNote)}</font></small></div></div></body></html>`;
-  const text = `Hi ${order.name},\n\nYour payment for ${eventConfig.eventName} has been verified.\nYour ticket numbers are: ${ticketList}\nShare these with your ${order.qty} friend${order.qty === 1 ? "" : "s"}.\nQuantity: ${order.qty}\n${formatDate(eventConfig.date)}\nDoors: ${eventConfig.doorsOpenTime}\nVenue: ${eventConfig.venueName}, ${eventConfig.venueAddress}\n\nShow the relevant ticket number at the entrance.\nSupport: ${eventConfig.contact.supportEmail} · ${eventConfig.contact.supportPhone}\n\n${eventConfig.emailFooterNote}`;
-  await transporter().sendMail({ from: process.env.GMAIL_USER, to: order.email, subject, html, text });
+  const subject = eventConfig.emailSubject.replace(
+    "REPLACE_ME_EMAIL_SUBJECT",
+    `${eventConfig.eventName} ticket confirmation`,
+  );
+  const supportContacts = eventConfig.contact.supportContacts
+    .map((contact) => `${contact.name}: ${contact.phone}`)
+    .join(" · ");
+  const supportContactLinks = eventConfig.contact.supportContacts
+    .map(
+      (contact) =>
+        `<a href="tel:${escapeHtml(contact.phone)}" style="color:#6b168f !important;-webkit-text-fill-color:#6b168f;text-decoration:underline"><font color="#6b168f">${escapeHtml(contact.name)}: ${escapeHtml(contact.phone)}</font></a>`,
+    )
+    .join(" · ");
+  const html = `<html><head><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"></head><body style="margin:0;background:#e4dbe8;color:#24152d"><div style="margin:0;background:#e4dbe8;padding:24px 12px;font-family:Arial,sans-serif;color:#24152d"><div style="max-width:640px;margin:0 auto"><h1 style="font-size:28px;margin:0 0 8px;color:#24152d !important;-webkit-text-fill-color:#24152d"><font color="#24152d">${escapeHtml(eventConfig.eventName)}</font></h1><p style="margin:0 0 20px;color:#5b4864 !important;-webkit-text-fill-color:#5b4864"><font color="#5b4864">Hi ${escapeHtml(order.name)}, your payment has been verified.</font></p>${ticketCards}<p style="margin:8px 0 20px;color:#4b2558 !important;-webkit-text-fill-color:#4b2558"><font color="#4b2558"><b>Share these ticket numbers with your ${order.qty} friend${order.qty === 1 ? "" : "s"}:</b><br><span style="color:#6b168f !important;-webkit-text-fill-color:#6b168f"><font color="#6b168f">${ticketList}</font></span></font></p><p style="color:#5b4864 !important;-webkit-text-fill-color:#5b4864"><font color="#5b4864"><b>Show the relevant ticket preview or ticket number at the entrance.</b></font></p><p style="color:#5b4864 !important;-webkit-text-fill-color:#5b4864"><font color="#5b4864">Support: ${escapeHtml(eventConfig.contact.supportEmail)} · ${supportContactLinks}</font></p><hr style="border:0;border-top:1px solid #cfc0d4"><small style="color:#6b5273 !important;-webkit-text-fill-color:#6b5273"><font color="#6b5273">${escapeHtml(eventConfig.emailFooterNote)}</font></small></div></div></body></html>`;
+  const text = `Hi ${order.name},\n\nYour payment for ${eventConfig.eventName} has been verified.\n\nYour ticket numbers are: ${ticketList}\nShare these with your ${order.qty} friend${order.qty === 1 ? "" : "s"}.\nQuantity: ${order.qty}\n${formatDate(eventConfig.date)}\nVenue: ${eventConfig.venueName}, ${eventConfig.venueAddress}\n\nShow the relevant ticket number at the entrance.\nSupport: ${eventConfig.contact.supportEmail} · ${supportContacts}\n\n${eventConfig.emailFooterNote}`;
+  await transporter().sendMail({
+    from: process.env.GMAIL_USER,
+    to: order.email,
+    subject,
+    html,
+    text,
+  });
 }
-export async function sendRejectionEmail(order: { email: string; name: string }, reason: string) {
-  await transporter().sendMail({ from: process.env.GMAIL_USER, to: order.email, subject: `${eventConfig.eventName}: payment update`, text: `Hi ${order.name},\n\nWe could not verify your payment for ${eventConfig.eventName}.\nReason: ${reason}\n\nPlease contact ${eventConfig.contact.supportEmail}.` });
+export async function sendRejectionEmail(
+  order: { email: string; name: string },
+  reason: string,
+) {
+  await transporter().sendMail({
+    from: process.env.GMAIL_USER,
+    to: order.email,
+    subject: `${eventConfig.eventName}: payment update`,
+    text: `Hi ${order.name},\n\nWe could not verify your payment for ${eventConfig.eventName}.\nReason: ${reason}\n\nPlease contact ${eventConfig.contact.supportEmail} or ${eventConfig.contact.supportContacts.map((contact) => `${contact.name}: ${contact.phone}`).join(" · ")}.`,
+  });
 }

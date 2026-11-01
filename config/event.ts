@@ -3,7 +3,6 @@ export const eventConfig = {
   eventName: "Open Mic & DJ night",
   tagline: "SLIIT Choir presents",
   date: "2026-11-16T17:30:00+05:30",
-  doorsOpenTime: "5.30PM",
   venueName: "New Building",
   venueAddress: "14th floor",
   mapLink: "https://maps.app.goo.gl/XfWL192RCFhARMyA9",
@@ -17,11 +16,16 @@ export const eventConfig = {
     bankName: "People's Bank",
     accountNumber: "081200210025946",
     branch: "Ruwanwella",
-    paymentInstructions: "Transfer and upload recipt put reference as DJ-ITXXXXXXXX"
+    paymentInstructions:
+      "Transfer and upload recipt put reference as DJ-ITXXXXXXXX",
   },
   contact: {
     supportEmail: "sliitchoir@gmail.com",
-    supportPhone: "0714266663"
+    supportPhone: "0714211115",
+    supportContacts: [
+      { name: "Dumindu", phone: "071 4211115" },
+      { name: "Pishon", phone: "071 572 9549" },
+    ],
   },
   theme: {
     primary: "#c026ff",
@@ -31,11 +35,12 @@ export const eventConfig = {
     foreground: "#f8f4ff",
     muted: "#b9abc7",
     logoPath: "",
-    heroImagePath: ""
+    heroImagePath: "",
   },
   ticketPrefix: "DJ-",
   emailSubject: "Your Tickets have been approved",
-  emailFooterNote: "Use these to gain access for the DJ night on 16th November at 14th floor new building"
+  emailFooterNote:
+    "Use these to gain access for the DJ night on 16th November at 14th floor new building",
 } as const;
 
 export type EventConfig = typeof eventConfig;
@@ -45,7 +50,6 @@ export const {
   eventName,
   tagline,
   date,
-  doorsOpenTime,
   venueName,
   venueAddress,
   mapLink,
@@ -56,5 +60,5 @@ export const {
   salesOpen,
   ticketPrefix,
   emailSubject,
-  emailFooterNote
+  emailFooterNote,
 } = eventConfig;
